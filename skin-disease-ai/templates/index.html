@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered skin disease detection using deep learning. Upload a skin lesion image for instant analysis with Grad-CAM explainability.">
+    <title>AI Dermatology Assistant — Skin Disease Detection</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ──────────────── Animated Background ──────────────── -->
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="orb orb-4"></div>
+        </div>
+        <!-- Floating Healthcare Particles -->
+        <div class="floating-particles" id="particles-container">
+            <div class="particle particle-cross" style="--x: 10%; --y: 20%; --delay: 0s; --dur: 18s;">+</div>
+            <div class="particle particle-cross" style="--x: 85%; --y: 15%; --delay: 3s; --dur: 22s;">+</div>
+            <div class="particle particle-cross" style="--x: 50%; --y: 80%; --delay: 7s; --dur: 20s;">+</div>
+            <div class="particle particle-cross" style="--x: 25%; --y: 60%; --delay: 2s; --dur: 16s;">+</div>
+            <div class="particle particle-cross" style="--x: 75%; --y: 45%; --delay: 5s; --dur: 24s;">+</div>
+            <div class="particle particle-dot" style="--x: 15%; --y: 70%; --delay: 1s; --dur: 14s;"></div>
+            <div class="particle particle-dot" style="--x: 90%; --y: 55%; --delay: 4s; --dur: 19s;"></div>
+            <div class="particle particle-dot" style="--x: 40%; --y: 30%; --delay: 6s; --dur: 21s;"></div>
+            <div class="particle particle-dot" style="--x: 65%; --y: 85%; --delay: 8s; --dur: 17s;"></div>
+            <div class="particle particle-ring" style="--x: 30%; --y: 40%; --delay: 2.5s; --dur: 23s;"></div>
+            <div class="particle particle-ring" style="--x: 70%; --y: 25%; --delay: 6.5s; --dur: 18s;"></div>
+            <div class="particle particle-ring" style="--x: 55%; --y: 65%; --delay: 9s; --dur: 20s;"></div>
+        </div>
+    </div>
+
+    <!-- ──────────────── Navigation ──────────────── -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="nav-logo">
+                    <!-- Animated Medical Cross + Heartbeat Logo -->
+                    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+                        <circle cx="22" cy="22" r="20" stroke="url(#logo-gradient)" stroke-width="2" fill="none" class="logo-circle"/>
+                        <path d="M22 12V32M12 22H32" stroke="url(#logo-gradient)" stroke-width="3" stroke-linecap="round" class="logo-cross"/>
+                        <defs>
+                            <linearGradient id="logo-gradient" x1="0" y1="0" x2="44" y2="44">
+                                <stop offset="0%" stop-color="#06b6d4"/>
+                                <stop offset="50%" stop-color="#22c55e"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="nav-title">SkinAI <span class="nav-badge">PRO</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link active">Home</a>
+                <a href="#upload-section" class="nav-link">Analyze</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- ──────────────── Hero Section ──────────────── -->
+        <section class="hero" id="hero">
+            <!-- DNA Helix Animation - Left Side -->
+            <div class="dna-container dna-left">
+                <div class="dna-strand">
+                    <div class="dna-pair" style="--i:0"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:1"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:2"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:3"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:4"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:5"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:6"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:7"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:8"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:9"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                </div>
+            </div>
+
+            <!-- DNA Helix Animation - Right Side -->
+            <div class="dna-container dna-right">
+                <div class="dna-strand">
+                    <div class="dna-pair" style="--i:0"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:1"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:2"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:3"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:4"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:5"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:6"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:7"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:8"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                    <div class="dna-pair" style="--i:9"><div class="dna-dot dot-left"></div><div class="dna-bridge"></div><div class="dna-dot dot-right"></div></div>
+                </div>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="heartbeat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 12H7L10 4L14 20L17 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heartbeat-line"/>
+                        </svg>
+                    </span>
+                    AI-Powered Healthcare Detection
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-line">AI Dermatology</span>
+                    <span class="title-line title-gradient">Assistant</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Detect skin diseases using advanced deep learning. Upload a dermatoscopic image 
+                    and get instant analysis with explainable AI visualizations.
+                </p>
+
+                <!-- Heartbeat Monitor Line -->
+                <div class="heartbeat-monitor">
+                    <svg viewBox="0 0 600 60" preserveAspectRatio="none">
+                        <path d="M0,30 L80,30 L100,30 L120,10 L130,50 L140,5 L150,55 L160,25 L180,30 L260,30 L280,30 L300,10 L310,50 L320,5 L330,55 L340,25 L360,30 L440,30 L460,30 L480,10 L490,50 L500,5 L510,55 L520,25 L540,30 L600,30" 
+                              fill="none" stroke="url(#heartbeat-grad)" stroke-width="2" class="heartbeat-path"/>
+                        <defs>
+                            <linearGradient id="heartbeat-grad" x1="0" y1="0" x2="600" y2="0">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0"/>
+                                <stop offset="30%" stop-color="#06b6d4"/>
+                                <stop offset="50%" stop-color="#22c55e"/>
+                                <stop offset="70%" stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19 14C20.49 12.54 22 10.79 22 8.5C22 7.04 21.42 5.64 20.39 4.61C19.36 3.58 17.96 3 16.5 3C14.74 3 13.19 3.89 12 5.18C10.81 3.89 9.26 3 7.5 3C6.04 3 4.64 3.58 3.61 4.61C2.58 5.64 2 7.04 2 8.5C2 10.79 3.51 12.54 5 14L12 21L19 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="stat-number counter" data-target="7">0</span>
+                        <span class="stat-label">Disease Classes</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-icon stat-icon-data">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/></svg>
+                        </span>
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Training Images</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-icon stat-icon-ai">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M12 1V4M12 20V23M4.22 4.22L6.34 6.34M17.66 17.66L19.78 19.78M1 12H4M20 12H23M4.22 19.78L6.34 17.66M17.66 6.34L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        </span>
+                        <span class="stat-number">Grad-CAM</span>
+                        <span class="stat-label">Explainable AI</span>
+                    </div>
+                </div>
+                <a href="#upload-section" class="hero-cta" id="hero-cta">
+                    <span class="cta-pulse"></span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M9.5 14.5L3 21M21 3L14.5 9.5M21 3L15 3M21 3V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="11" cy="13" r="7" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span>Start Analysis</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cta-arrow">
+                        <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ──────────────── Features Section ──────────────── -->
+        <section class="features-section" id="features">
+            <div class="section-header">
+                <div class="section-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-desc">Advanced AI capabilities for accurate skin disease detection</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card glass-card">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon-bg"></div>
+                        <svg viewBox="0 0 48 48" fill="none" class="feature-icon">
+                            <circle cx="24" cy="24" r="20" stroke="url(#f1)" stroke-width="2"/>
+                            <path d="M16 24L21 29L32 18" stroke="url(#f1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs><linearGradient id="f1" x1="4" y1="4" x2="44" y2="44"><stop stop-color="#06b6d4"/><stop offset="1" stop-color="#22c55e"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>Instant Detection</h3>
+                    <p>Upload any skin lesion image and get predictions in seconds using our optimized MobileNetV2 model.</p>
+                    <div class="feature-tag">Real-time</div>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon-bg feature-icon-bg-2"></div>
+                        <svg viewBox="0 0 48 48" fill="none" class="feature-icon">
+                            <circle cx="24" cy="24" r="18" stroke="url(#f2)" stroke-width="2" opacity="0.4"/>
+                            <circle cx="24" cy="24" r="12" stroke="url(#f2)" stroke-width="2" opacity="0.6"/>
+                            <circle cx="24" cy="24" r="6" stroke="url(#f2)" stroke-width="2"/>
+                            <circle cx="24" cy="24" r="2" fill="url(#f2)"/>
+                            <defs><linearGradient id="f2" x1="6" y1="6" x2="42" y2="42"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>Grad-CAM Heatmap</h3>
+                    <p>Visualize exactly which regions of the image influenced the AI's prediction with Grad-CAM explainability.</p>
+                    <div class="feature-tag feature-tag-purple">Explainable AI</div>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon-bg feature-icon-bg-3"></div>
+                        <svg viewBox="0 0 48 48" fill="none" class="feature-icon">
+                            <rect x="8" y="8" width="32" height="32" rx="8" stroke="url(#f3)" stroke-width="2"/>
+                            <path d="M16 32V22M24 32V16M32 32V24" stroke="url(#f3)" stroke-width="3" stroke-linecap="round"/>
+                            <defs><linearGradient id="f3" x1="8" y1="8" x2="40" y2="40"><stop stop-color="#f59e0b"/><stop offset="1" stop-color="#ef4444"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>Confidence Scores</h3>
+                    <p>Get detailed confidence percentages for the top-3 predicted diseases along with risk assessments.</p>
+                    <div class="feature-tag feature-tag-amber">Top-3 Results</div>
+                </div>
+                <div class="feature-card glass-card">
+                    <div class="feature-icon-wrap">
+                        <div class="feature-icon-bg feature-icon-bg-4"></div>
+                        <svg viewBox="0 0 48 48" fill="none" class="feature-icon">
+                            <path d="M24 8V40M8 24H40" stroke="url(#f4)" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="24" cy="24" r="20" stroke="url(#f4)" stroke-width="2" opacity="0.3"/>
+                            <defs><linearGradient id="f4" x1="4" y1="4" x2="44" y2="44"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>Disease Database</h3>
+                    <p>Comprehensive information about each disease including symptoms, causes, and recommended medical actions.</p>
+                    <div class="feature-tag feature-tag-green">7 Classes</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ──────────────── Upload Section ──────────────── -->
+        <section class="upload-section" id="upload-section">
+            <div class="section-header">
+                <div class="section-icon section-icon-upload">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M17 8L12 3M12 3L7 8M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h2 class="section-title">Upload & Analyze</h2>
+                <p class="section-desc">Upload a dermatoscopic image of a skin lesion for AI-powered analysis</p>
+            </div>
+
+            <div class="upload-container">
+                <!-- Drag & Drop Upload Area -->
+                <div class="upload-area" id="upload-area">
+                    <!-- Animated Corner Borders -->
+                    <div class="upload-corner corner-tl"></div>
+                    <div class="upload-corner corner-tr"></div>
+                    <div class="upload-corner corner-bl"></div>
+                    <div class="upload-corner corner-br"></div>
+
+                    <div class="upload-content" id="upload-content">
+                        <div class="upload-icon">
+                            <!-- Medical Scan Icon -->
+                            <div class="scan-ring-container">
+                                <div class="scan-ring"></div>
+                                <div class="scan-ring scan-ring-2"></div>
+                                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="12" y="12" width="40" height="40" rx="10" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/>
+                                    <path d="M32 22V42M22 32H42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                    <circle cx="24" cy="26" r="3" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="upload-title">Drag & Drop your image here</h3>
+                        <p class="upload-subtitle">or click to browse files</p>
+                        <div class="upload-chips">
+                            <span class="upload-chip">PNG</span>
+                            <span class="upload-chip">JPG</span>
+                            <span class="upload-chip">JPEG</span>
+                            <span class="upload-chip">BMP</span>
+                            <span class="upload-chip">WebP</span>
+                        </div>
+                        <p class="upload-formats">Maximum file size: 10MB</p>
+                    </div>
+                    <!-- Image preview (hidden by default) -->
+                    <div class="preview-container" id="preview-container" style="display: none;">
+                        <img id="preview-image" alt="Uploaded skin lesion preview">
+                        <button class="remove-image" id="remove-image" title="Remove image">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/bmp,image/webp" hidden>
+                </div>
+
+                <!-- Analyze Button -->
+                <button class="analyze-btn" id="analyze-btn" disabled>
+                    <div class="btn-content">
+                        <div class="btn-pulse-ring"></div>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="M9.5 14.5L3 21M21 3L14.5 9.5M21 3L15 3M21 3V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="11" cy="13" r="7" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>Analyze Image</span>
+                    </div>
+                    <div class="btn-loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Analyzing...</span>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- ──────────────── Loading Overlay ──────────────── -->
+        <div class="loading-overlay" id="loading-overlay" style="display: none;">
+            <div class="loading-card">
+                <div class="loading-animation">
+                    <div class="scan-line"></div>
+                    <!-- Animated Medical Cross in Loading -->
+                    <div class="loading-cross-container">
+                        <div class="loading-orbit"></div>
+                        <div class="loading-orbit loading-orbit-2"></div>
+                        <div class="loading-orbit loading-orbit-3"></div>
+                        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="loading-cross-svg">
+                            <path d="M40 15V65M15 40H65" stroke="url(#load-cross-grad)" stroke-width="4" stroke-linecap="round"/>
+                            <circle cx="40" cy="40" r="12" stroke="url(#load-cross-grad)" stroke-width="2" opacity="0.5"/>
+                            <defs>
+                                <linearGradient id="load-cross-grad" x1="15" y1="15" x2="65" y2="65">
+                                    <stop offset="0%" stop-color="#06b6d4"/>
+                                    <stop offset="50%" stop-color="#22c55e"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Mini Heartbeat in Loading -->
+                <div class="loading-heartbeat">
+                    <svg viewBox="0 0 200 30" preserveAspectRatio="none">
+                        <path d="M0,15 L40,15 L50,5 L55,25 L60,2 L65,28 L70,12 L90,15 L130,15 L140,5 L145,25 L150,2 L155,28 L160,12 L180,15 L200,15" 
+                              fill="none" stroke="url(#hb-load)" stroke-width="1.5" class="heartbeat-path-small"/>
+                        <defs>
+                            <linearGradient id="hb-load" x1="0" y1="0" x2="200" y2="0">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0"/>
+                                <stop offset="50%" stop-color="#22c55e"/>
+                                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3 class="loading-title">Analyzing Skin Lesion</h3>
+                <p class="loading-subtitle">AI model processing your image...</p>
+                <div class="loading-steps">
+                    <div class="load-step active" id="step-1">
+                        <div class="step-dot"></div>
+                        <span>Preprocessing Image</span>
+                    </div>
+                    <div class="load-step" id="step-2">
+                        <div class="step-dot"></div>
+                        <span>Running MobileNetV2 Classification</span>
+                    </div>
+                    <div class="load-step" id="step-3">
+                        <div class="step-dot"></div>
+                        <span>Generating Grad-CAM Heatmap</span>
+                    </div>
+                    <div class="load-step" id="step-4">
+                        <div class="step-dot"></div>
+                        <span>Preparing Results</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ──────────────── Results Section ──────────────── -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <div class="section-header">
+                <div class="section-icon section-icon-results">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h2 class="section-title">Analysis Results</h2>
+                <p class="section-desc">AI-powered diagnosis with explainable visualizations</p>
+            </div>
+
+            <!-- Prediction Card -->
+            <div class="results-grid">
+                <!-- Left: Images -->
+                <div class="results-images">
+                    <div class="image-card glass-card">
+                        <div class="image-card-header">
+                            <span class="card-tag">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Original Image
+                            </span>
+                        </div>
+                        <img id="result-original" alt="Original uploaded image">
+                    </div>
+                    <div class="image-card glass-card gradcam-card">
+                        <div class="image-card-header">
+                            <span class="card-tag tag-gradcam">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="2" opacity="0.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+                                Grad-CAM Heatmap
+                            </span>
+                        </div>
+                        <img id="result-gradcam" alt="Grad-CAM heatmap visualization">
+                        <p class="gradcam-caption">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                            Red/yellow regions indicate areas most influential to the prediction
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Prediction Details -->
+                <div class="results-details">
+                    <!-- Top Prediction -->
+                    <div class="prediction-card glass-card">
+                        <div class="prediction-header">
+                            <h3>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Primary Diagnosis
+                            </h3>
+                            <span class="risk-badge" id="risk-badge">—</span>
+                        </div>
+                        <div class="prediction-name" id="prediction-name">—</div>
+                        <div class="confidence-section">
+                            <div class="confidence-header">
+                                <span>Confidence</span>
+                                <span class="confidence-value" id="confidence-value">0%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidence-fill" style="width: 0%">
+                                    <div class="confidence-shimmer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top 3 Predictions -->
+                    <div class="top3-card glass-card">
+                        <h3 class="card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Top 3 Predictions
+                        </h3>
+                        <div class="top3-list" id="top3-list"></div>
+                    </div>
+
+                    <!-- Risk Assessment -->
+                    <div class="risk-card glass-card" id="risk-card">
+                        <h3 class="card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.54 21H20.46A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Risk Assessment
+                        </h3>
+                        <div class="risk-indicator" id="risk-indicator">
+                            <div class="risk-gauge">
+                                <div class="risk-segment risk-low-seg">Low</div>
+                                <div class="risk-segment risk-med-seg">Medium</div>
+                                <div class="risk-segment risk-high-seg">High</div>
+                                <div class="risk-fill" id="risk-fill"></div>
+                            </div>
+                            <span class="risk-text" id="risk-text">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disease Information Panel -->
+            <div class="disease-info-panel glass-card" id="disease-info-panel">
+                <h3 class="info-panel-title">
+                    <div class="info-icon-wrap">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    Disease Information
+                </h3>
+
+                <div class="info-grid">
+                    <div class="info-block">
+                        <h4>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6H20M4 12H20M4 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                            Description
+                        </h4>
+                        <p id="info-description">—</p>
+                    </div>
+                    <div class="info-block">
+                        <h4>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 12H18L15 21L9 3L6 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Symptoms
+                        </h4>
+                        <ul class="info-list" id="info-symptoms"></ul>
+                    </div>
+                    <div class="info-block">
+                        <h4>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                            Causes
+                        </h4>
+                        <ul class="info-list" id="info-causes"></ul>
+                    </div>
+                    <div class="info-block info-block-full">
+                        <h4>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Recommended Actions
+                        </h4>
+                        <ul class="info-list actions-list" id="info-actions"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Analysis Button -->
+            <div class="new-analysis-container">
+                <button class="new-analysis-btn" id="new-analysis-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M1 4V10H7M23 20V14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14L18.36 18.36A9 9 0 0 1 3.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>New Analysis</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ──────────────── About Section ──────────────── -->
+        <section class="about-section" id="about">
+            <div class="section-header">
+                <div class="section-icon section-icon-about">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <h2 class="section-title">About This System</h2>
+                <p class="section-desc">Powered by state-of-the-art deep learning technology</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card glass-card">
+                    <div class="about-icon">
+                        <div class="about-icon-ring"></div>
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="18" stroke="url(#ai-g)" stroke-width="2"/>
+                            <path d="M16 24L21 29L32 18" stroke="url(#ai-g)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs><linearGradient id="ai-g" x1="6" y1="6" x2="42" y2="42"><stop stop-color="#06b6d4"/><stop offset="1" stop-color="#22c55e"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>MobileNetV2</h3>
+                    <p>Transfer learning with ImageNet pre-trained weights for accurate feature extraction from skin lesion images.</p>
+                </div>
+                <div class="about-card glass-card">
+                    <div class="about-icon">
+                        <div class="about-icon-ring about-icon-ring-2"></div>
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <rect x="8" y="8" width="32" height="32" rx="8" stroke="url(#dat-g)" stroke-width="2"/>
+                            <path d="M16 34V24M24 34V16M32 34V28" stroke="url(#dat-g)" stroke-width="3" stroke-linecap="round"/>
+                            <defs><linearGradient id="dat-g" x1="8" y1="8" x2="40" y2="40"><stop stop-color="#f59e0b"/><stop offset="1" stop-color="#ef4444"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>HAM10000 Dataset</h3>
+                    <p>Trained on 10,000+ dermatoscopic images across 7 clinically significant skin disease categories.</p>
+                </div>
+                <div class="about-card glass-card">
+                    <div class="about-icon">
+                        <div class="about-icon-ring about-icon-ring-3"></div>
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="18" stroke="url(#xai-g)" stroke-width="2" opacity="0.4"/>
+                            <circle cx="24" cy="24" r="10" stroke="url(#xai-g)" stroke-width="2"/>
+                            <circle cx="24" cy="24" r="4" fill="url(#xai-g)"/>
+                            <defs><linearGradient id="xai-g" x1="6" y1="6" x2="42" y2="42"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs>
+                        </svg>
+                    </div>
+                    <h3>Explainable AI</h3>
+                    <p>Grad-CAM heatmap visualization shows exactly which regions of the image influenced the AI's prediction.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ──────────────── Footer ──────────────── -->
+    <footer class="footer" id="footer">
+        <div class="footer-content">
+            <div class="footer-disclaimer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18A2 2 0 0 0 3.54 21H20.46A2 2 0 0 0 22.18 18L13.71 3.86A2 2 0 0 0 10.29 3.86Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p><strong>Medical Disclaimer:</strong> This tool is for educational and research purposes only. 
+                It is <strong>not</strong> a substitute for professional medical advice, diagnosis, or treatment. 
+                Always consult a qualified dermatologist for skin concerns.</p>
+            </div>
+            <div class="footer-heartbeat">
+                <svg viewBox="0 0 400 30" preserveAspectRatio="none">
+                    <path d="M0,15 L60,15 L80,5 L85,25 L90,2 L95,28 L100,12 L120,15 L180,15 L200,5 L205,25 L210,2 L215,28 L220,12 L240,15 L300,15 L320,5 L325,25 L330,2 L335,28 L340,12 L360,15 L400,15" 
+                          fill="none" stroke="url(#footer-hb)" stroke-width="1" class="heartbeat-path-footer" opacity="0.3"/>
+                    <defs>
+                        <linearGradient id="footer-hb" x1="0" y1="0" x2="400" y2="0">
+                            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0"/>
+                            <stop offset="50%" stop-color="#22c55e"/>
+                            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="footer-bottom">
+                <span>AI Dermatology Assistant v1.0</span>
+                <span class="footer-dot">•</span>
+                <span>Built with TensorFlow & Flask</span>
+                <span class="footer-dot">•</span>
+                <span>MobileNetV2 + Grad-CAM</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
