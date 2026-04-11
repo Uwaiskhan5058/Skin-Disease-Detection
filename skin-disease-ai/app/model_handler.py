@@ -113,7 +113,7 @@ def load_model():
     if os.path.exists(MODEL_PATH):
         try:
             _model.load_weights(MODEL_PATH)
-            print(f"[✓] Model weights loaded from: {MODEL_PATH}")
+            print(f"[OK] Model weights loaded from: {MODEL_PATH}")
         except Exception as e:
             print(f"[!] Could not load weights: {e}")
             print("[i] Using model with ImageNet base weights (untrained classifier)")
