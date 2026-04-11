@@ -1,11 +1,3 @@
-"""
-Flask Application — AI Dermatology Assistant
-=============================================
-Main entry point for the skin disease detection web application.
-Provides REST API endpoints for image upload, prediction, and 
-Grad-CAM visualization.
-"""
-
 import os
 import sys
 import json
@@ -188,7 +180,7 @@ def server_error(e):
 
 if __name__ == '__main__':
     print("\n" + "=" * 60)
-    print("  🩺 AI Dermatology Assistant")
+    print("  AI Dermatology Assistant")
     print("  Skin Disease Detection System v1.0")
     print("=" * 60)
     
@@ -208,3 +200,4 @@ if __name__ == '__main__':
         port=port,
         debug=True
     )
+
